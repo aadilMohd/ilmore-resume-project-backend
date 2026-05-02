@@ -21,8 +21,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "theilmora.com",
-        "www.theilmora.com",
-        "ilmora-resume-project-frontend.vercel.app",
+        "https://theilmora.com",
+        "https://www.theilmora.com",
+        "https://ilmora-resume-project-frontend.vercel.app",
         "http://localhost:3000",
         "http://127.0.0.1:3000"
     ], 
