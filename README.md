@@ -1,6 +1,6 @@
-# Campus Copilot API 🚀
+# Ilmora Resume API 🚀
 
-Campus Copilot is a powerful, AI-driven resume analysis backend built with FastAPI. It helps candidates optimize their resumes against specific Job Descriptions (JDs) using advanced LLMs like Google Gemini.
+Ikmora is a powerful, AI-driven resume analysis backend built with FastAPI. It helps candidates optimize their resumes against specific Job Descriptions (JDs) using advanced LLMs like Google Gemini.
 
 ## ✨ Features
 
