@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from google import genai
 from google.genai import types
@@ -140,3 +141,45 @@ async def analyze_gemini(resume_text: str, jd_text: str, context: str = "") -> d
     except Exception as e:
         print(f"Failed to parse Gemini JSON: {e}")
         return {"error": str(e)}
+
+async def analyze_gemini_stream(resume_text: str, jd_text: str, context: str = ""):
+    """
+    Connects asynchronously to Gemini and yields text chunks in real-time
+    using the modern google-genai streaming SDK architecture.
+    """
+    # Initialize the modern client
+    client = genai.Client(api_key=settings.GEMINI_API_KEY)
+    
+    # Inject the text into your template
+    prompt = USER_PROMPT.format(
+        context=context,
+        resume_text=resume_text[:3000],  
+        jd_text=jd_text[:2000]
+    )
+    
+    try:
+        # 1. CHANGE HERE: Use generate_content_stream instead of generate_content
+        response = await client.aio.models.generate_content_stream(
+            model='gemini-3.1-flash-lite',
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,
+                temperature=0.3,
+                # Note: Keeping response_mime_type guarantees Gemini outputs JSON characters,
+                # which our frontend `jsonrepair` library parses on the fly!
+                response_mime_type="application/json",
+            )
+        )
+        
+        # 2. CHANGE HERE: Loop over the async response stream and yield text chunks immediately
+        async for chunk in response:
+            if chunk.text:
+                now = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+                print(f"[{now}] 🔥 CHUNK: {chunk.text!r}")
+                
+                yield chunk.text
+                
+    except Exception as e:
+        print(f"Gemini Streaming Error: {e}")
+        # Yield an explicit error string so the downstream handler catches it
+        yield json.dumps({"error": f"Model stream execution failed: {str(e)}"})
