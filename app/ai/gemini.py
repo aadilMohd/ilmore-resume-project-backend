@@ -159,7 +159,7 @@ async def analyze_gemini_stream(resume_text: str, jd_text: str, context: str = "
     
     try:
         # 1. CHANGE HERE: Use generate_content_stream instead of generate_content
-        response = await client.aio.models.generate_content_stream(
+        response = client.aio.models.generate_content_stream(
             model='gemini-3.1-flash-lite',
             contents=prompt,
             config=types.GenerateContentConfig(
@@ -174,8 +174,8 @@ async def analyze_gemini_stream(resume_text: str, jd_text: str, context: str = "
         # 2. CHANGE HERE: Loop over the async response stream and yield text chunks immediately
         async for chunk in response:
             if chunk.text:
-                now = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-                print(f"[{now}] 🔥 CHUNK: {chunk.text!r}")
+                # now = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+                # print(f"[{now}] 🔥 CHUNK: {chunk.text!r}")
                 
                 yield chunk.text
                 
